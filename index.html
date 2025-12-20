@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🧠 Belajar Fundamental LLM dari Nol</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app">
+      <!-- Hero Section -->
+      <header class="hero">
+        <div class="hero-content">
+          <div class="hero-emoji">🧠</div>
+          <h1>Belajar Fundamental LLM dari Nol</h1>
+          <p class="hero-subtitle">
+            Bongkar rahasia "otak" LLM, Liat gimana cara dia mikir & generate
+            teks, step by step, dari nol banget!
+          </p>
+          <button id="startBtn" class="btn btn-hero">Mulai Belajar 🚀</button>
+        </div>
+        <div class="scroll-hint">
+          <span>Scroll untuk mulai</span>
+          <div class="scroll-arrow">↓</div>
+        </div>
+      </header>
+
+      <!-- Intro Section: Objectives & Prerequisites -->
+      <section class="intro-section">
+        <h2 class="intro-title">Persiapan Sebelum Mulai</h2>
+        <div class="info-grid">
+          <div class="info-card objectives">
+            <div class="card-icon">🎯</div>
+            <h3>Apa yang Akan Kita Pelajari</h3>
+            <ul>
+              <li>Cara ubah teks jadi angka (Tokenization)</li>
+              <li>Bikin huruf jadi vektor angka (Embedding)</li>
+              <li>Bedah otak Neural Network simpel</li>
+              <li>Konsep Training: Forward Pass & Backprop</li>
+              <li>Generate teks pake model buatan sendiri</li>
+            </ul>
+          </div>
+          <div class="info-card prerequisites">
+            <div class="card-icon">📋</div>
+            <h3>Prasyarat</h3>
+            <ul>
+              <li>Python dasar (variabel, loop, fungsi)</li>
+              <li>Paham dikit soal array & dictionary</li>
+              <li>Matematika SD (tambah, kali) doang</li>
+              <li>Logika ngoding basic</li>
+              <li>Ngerti dikit soal fungsi & parameter</li>
+            </ul>
+            <p class="prereq-note">
+              💡 Gak perlu background AI/ML samsek sikat!
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Story Container -->
+      <main class="story-container" id="storyContainer">
+        <!-- Chapter 0: The Problem -->
+        <section class="chapter" id="chapter0">
+          <div class="chapter-header">
+            <span class="chapter-num">Prolog</span>
+            <h2>🤔 Kalian pernah kepikiran gak sih</h2>
+          </div>
+          <div class="chapter-content">
+            <div class="story-text">
+              <p class="highlight-text">kok bisa ChatGPT pinter banget?</p>
+              <p>
+                Padahal aslinya komputer itu
+                <span class="text-glow">bego</span> bro. Dia cuma ngerti angka 0
+                sama 1. Gak ngerti bahasa, apalagi perasaan lu.
+              </p>
+              <p>
+                Nah mission impossible kita: gimana caranya ngajarin benda mati
+                ini biar bisa <strong>ngomong kayak manusia</strong>?
+              </p>
+            </div>
+
+            <div class="visual-card mission-card">
+              <div class="mission-header">🎯 Misi Kita Hari Ini</div>
+              <div class="mission-content">
+                <div class="mission-input">
+                  <span class="label">Kasih input:</span>
+                  <code>"aku"</code>
+                </div>
+                <div class="mission-arrow">→</div>
+                <div class="mission-output">
+                  <span class="label">AI harus lanjutin:</span>
+                  <code>"aku suka koding ai."</code>
+                </div>
+              </div>
+            </div>
+
+            <div class="story-text">
+              <p>
+                Caranya? Kita suruh dia ngenalin
+                <span class="text-accent">pola</span> dari data teks kita.
+              </p>
+              <p>Langsung aja ketik kalimat yang mau AI pelajarin:</p>
+            </div>
+
+            <div class="training-input-section">
+              <label for="trainingText">📝 Teks Latihan:</label>
+              <input
+                type="text"
+                id="trainingText"
+                value="aku suka koding ai."
+                class="training-input"
+                placeholder="Ketik kalimat apapun..."
+              />
+              <div class="input-stats">
+                <span id="charCount">21</span> karakter,
+                <span id="uniqueCount">11</span> karakter unik
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Chapter 1: Tokenization -->
+        <section class="chapter" id="chapter1">
+          <div class="chapter-header">
+            <span class="chapter-num">Bab 1</span>
+            <h2>🔢 Ubah Huruf Jadi Angka</h2>
+          </div>
+          <div class="chapter-content">
+            <div class="story-text">
+              <p>
+                <strong>Step 1:</strong> Komputer itu buta huruf, taunya cuma
+                angka. Jadi kita harus kasih
+                <span class="text-accent">nomor absen (index)</span> buat tiap
+                huruf.
+              </p>
+              <p>Nama kerennya: <span class="text-glow">Tokenization</span>!</p>
+            </div>
+
+            <div class="explanation-card">
+              <h4>📖 Gimana Caranya?</h4>
+              <ol>
+                <li>Ambil semua karakter dari teks</li>
+                <li>Hapus duplikat (ambil karakter unik saja)</li>
+                <li>Urutkan sesuai abjad A sampai Z</li>
+                <li>Berikan nomor urut mulai dari 0</li>
+              </ol>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">Python</span>
+                <span class="code-title">Langkah tokenization</span>
+              </div>
+              <pre><code>text = <span class="code-string">"<span id="codeText1">aku suka koding ai.</span>"</span>
+
+<span class="code-comment"># 1. Ambil karakter unik & urutkan</span>
+chars = sorted(list(set(text)))
+<span class="code-comment"># Hasil: <span id="codeChars1">[' ', '.', 'a', 'd', 'g', 'i', 'k', 'n', 'o', 's', 'u']</span></span>
+
+<span class="code-comment"># 2. Bikin "kamus" huruf → angka</span>
+stoi = { ch:i <span class="code-keyword">for</span> i,ch <span class="code-keyword">in</span> enumerate(chars) }
+<span class="code-comment"># Hasil: <span id="codeStoi1">{' ': 0, '.': 1, 'a': 2, 'd': 3, ...}</span></span></code></pre>
+            </div>
+
+            <div class="visual-card">
+              <h3>📖 Hasil: Kamus Karakter</h3>
+              <p class="visual-desc">
+                Setiap karakter mendapatkan indeks unik:
+              </p>
+              <div id="vocabGrid" class="vocab-grid"></div>
+            </div>
+
+            <div class="story-text">
+              <p>
+                Sekarang gas kita <strong>convert</strong> teks jadi deretan
+                angka:
+              </p>
+            </div>
+
+            <div class="visual-card tokenization-card">
+              <h3>🔄 Teks → Angka</h3>
+              <p class="visual-desc">
+                Setiap huruf diganti pake ID dari kamus tadi:
+              </p>
+              <div id="tokenizationViz" class="tokenization-viz"></div>
+            </div>
+
+            <div class="insight-box">
+              <span class="insight-icon">💡</span>
+              <div class="insight-content">
+                <strong>Note!</strong>
+                <span id="vocabNoteText"
+                  >Spasi juga dihitung sebagai karakter dengan ID = 0. Kenapa 0?
+                  Karena dia paling awal urutan abjadnya.</span
+                >
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Chapter 2: Embedding -->
+        <section class="chapter" id="chapter2">
+          <div class="chapter-header">
+            <span class="chapter-num">Bab 2</span>
+            <h2>📊 Bikin Angka Menjadi Lebih Bermakna (Embedding)</h2>
+          </div>
+          <div class="chapter-content">
+            <div class="story-text">
+              <p>
+                <strong>Masalah fatalnya bro:</strong> Kalo kita cuma kasih
+                angka (misal 'a'=2, 'b'=3), komputer bakal mikir 'a' sama 'b'
+                itu mirip karena angkanya deketan.
+              </p>
+              <p>
+                Padahal 'Apel' sama 'Batu' kan beda jauh! Jadi angka doang
+                <strong>GAK CUKUP</strong>.
+              </p>
+              <p>
+                <strong>Solusinya:</strong> Kita ubah setiap huruf menjadi
+                <span class="text-glow">vektor</span> (deretan angka). Dengan
+                demikian, tiap huruf memiliki representasi numerik yang lebih
+                kaya.
+              </p>
+            </div>
+
+            <div class="comparison-box">
+              <div class="compare-item bad">
+                <span class="compare-label">❌ Sebelum</span>
+                <code>"a" → 2</code>
+                <span class="compare-desc"
+                  >Hanya 1 angka, informasi terbatas</span
+                >
+              </div>
+              <div class="compare-arrow">→</div>
+              <div class="compare-item good">
+                <span class="compare-label">✅ Sesudah</span>
+                <code>"a" → [0.1, -0.3, 0.5, 0.2]</code>
+                <span class="compare-desc"
+                  >4 angka sekaligus! Lebih kaya maknanya</span
+                >
+              </div>
+            </div>
+
+            <div class="explanation-card">
+              <h4>🎲 Darimana Angka-angka Ini?</h4>
+              <p>
+                Awalnya <strong>random</strong> (acak)! Kita generate pakai
+                rumus distribusi normal (Gaussian) dengan rata-rata 0 dan
+                standar deviasi 0.1
+              </p>
+              <p>
+                Nanti saat training, AI akan "belajar" nilai terbaik untuk
+                angka-angka ini.
+              </p>
+              <div class="code-inline">
+                <code
+                  >random.seed(42)
+                  <span class="code-comment"
+                    ># Supaya "random" selalu sama tiap run</span
+                  ></code
+                >
+              </div>
+              <p class="note-text">
+                💡 <strong>Kenapa seed(42)?</strong> Supaya semua orang dapat
+                hasil sama persis, memudahkan debugging!
+              </p>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">Python</span>
+                <span class="code-title">Bikin tabel embedding</span>
+              </div>
+              <pre><code>n_embd = <span class="code-number">4</span>  <span class="code-comment"># Tiap huruf jadi 4 angka</span>
+vocab_size = <span class="code-number">11</span>  <span class="code-comment"># Jumlah karakter unik</span>
+
+<span class="code-comment"># Bikin tabel embedding isinya angka random</span>
+embedding_table = [
+    [gauss(<span class="code-number">0</span>, <span class="code-number">0.1</span>) <span class="code-keyword">for</span> _ <span class="code-keyword">in</span> range(n_embd)] 
+    <span class="code-keyword">for</span> _ <span class="code-keyword">in</span> range(vocab_size)
+]
+<span class="code-comment"># Hasilnya: 11 baris × 4 kolom = 44 angka random</span></code></pre>
+            </div>
+
+            <div class="visual-card">
+              <h3>🎲 Tabel Embedding (Isinya Random Awal)</h3>
+              <p class="visual-desc">
+                Tiap huruf punya 4 angka.
+                <span class="text-accent">Biru = positif</span>,
+                <span class="text-pink">Pink = negatif</span>:
+              </p>
+              <div id="embeddingTable" class="embedding-table"></div>
+            </div>
+
+            <div class="explanation-card">
+              <h4>📍 Bonus: Position Embedding (Urutan itu Penting)</h4>
+              <p>
+                Selain hurufnya apa, <strong>urutannya</strong> juga ngefek bro!
+                Huruf "a" di depan (aku) beda konteks sama "a" di belakang
+                (suka).
+              </p>
+              <p>
+                Kita pake <code>block_size = 3</code> (liat 3 huruf sebelumnya),
+                jadi butuh 3 position vector.
+              </p>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">Python</span>
+                <span class="code-title"
+                  >Final embedding = token + position</span
+                >
+              </div>
+              <pre><code><span class="code-comment"># Embedding akhir = embedding karakter + embedding posisi</span>
+final_embedding = token_emb[char_id] + position_emb[position]
+
+<span class="code-comment"># Contoh: huruf "a" di posisi 0</span>
+<span class="code-comment"># = [0.1, -0.3, 0.5, 0.2] + [0.05, 0.1, -0.1, 0.2]</span>
+<span class="code-comment"># = [0.15, -0.2, 0.4, 0.4]</span></code></pre>
+            </div>
+
+            <div class="insight-box">
+              <span class="insight-icon">🧠</span>
+              <div class="insight-content">
+                <strong>Kenapa random?</strong> Neural network bakal benerin
+                nilai-nilai ini pas training. Random itu cuma start point doang
+                , yg penting variatif!
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Chapter 3: Training Data -->
+        <section class="chapter" id="chapter3">
+          <div class="chapter-header">
+            <span class="chapter-num">Bab 3</span>
+            <h2>📚 Bikin "Soal Latihan" buat AI</h2>
+          </div>
+          <div class="chapter-content">
+            <div class="story-text">
+              <p>
+                Bayangin AI itu murid baru yg polos banget, dan kita gurunya.
+              </p>
+              <p>
+                Kita kasih dia ribuan <strong>"Flashcard"</strong> buat latihan:
+                <br />
+                <span class="text-accent">3 huruf didepan (Soal)</span> →
+                <span class="text-glow"
+                  >1 huruf selanjutnya (Kunci Jawaban)</span
+                >
+              </p>
+            </div>
+
+            <div class="explanation-card">
+              <h4>📝 Cara Membuat Soal:</h4>
+              <ol>
+                <li>Ambil 3 karakter berturut-turut sebagai input (X)</li>
+                <li>Karakter ke-4 adalah jawaban yang benar (Y)</li>
+                <li>Geser 1 posisi, ulangi sampai habis</li>
+              </ol>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">Python</span>
+                <span class="code-title">Membuat pasangan soal-jawaban</span>
+              </div>
+              <pre><code>block_size = <span class="code-number">3</span>  <span class="code-comment"># Lihat 3 karakter sebelumnya</span>
+x_data, y_data = [], []
+
+<span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(len(data) - block_size):
+    x_data.append(data[i : i + block_size])  <span class="code-comment"># 3 huruf input</span>
+    y_data.append(data[i + block_size])      <span class="code-comment"># 1 huruf target</span>
+
+<span class="code-comment"># Dengan 21 karakter dan block_size=3:</span>
+<span class="code-comment"># Dapat 21 - 3 = 18 pasangan soal!</span></code></pre>
+            </div>
+
+            <div class="visual-card training-data-card">
+              <h3>📋 Dataset Training: <span id="dataCount">17</span> Soal</h3>
+              <p class="visual-desc">
+                AI harus belajar menebak huruf ke-4 dari 3 huruf sebelumnya:
+              </p>
+              <div id="trainingData" class="training-data"></div>
+            </div>
+
+            <div class="insight-box">
+              <span class="insight-icon">💡</span>
+              <div class="insight-content">
+                <strong>Kenapa 3 huruf?</strong> Semakin banyak konteks, semakin
+                bagus prediksi. Tapi untuk demo, 3 sudah cukup informatif!
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Chapter 4: Neural Network -->
+        <section class="chapter" id="chapter4">
+          <div class="chapter-header">
+            <span class="chapter-num">Bab 4</span>
+            <h2>🏗️ Arsitektur "Otak" AI</h2>
+          </div>
+          <div class="chapter-content">
+            <div class="story-text">
+              <p>
+                Sekarang kenalan sama jubah utamanya:
+                <span class="text-glow">Neural Network</span>!
+              </p>
+              <p>
+                Bayangin ini kayak <strong>jaringan lampu kota</strong> yang
+                setiap lampunya terhubung ke banyak titik lain. Begitu satu
+                lampu meredup atau terang, pola seluruh kota ikut berubah.
+              </p>
+            </div>
+
+            <div class="explanation-card">
+              <h4>🧮 Itungan Ukuran Layer:</h4>
+              <ul>
+                <li>
+                  <strong>Input:</strong> 3 huruf × 4 dimensi =
+                  <code>12 neuron</code>
+                </li>
+                <li>
+                  <strong>Hidden:</strong> Kita pake
+                  <code>48 neuron</code> (cukup lah buat belajar pola)
+                </li>
+                <li>
+                  <strong>Output:</strong> 1 per karakter =
+                  <code>11 neuron</code>
+                </li>
+              </ul>
+            </div>
+
+            <div class="network-visual">
+              <div class="network-layer">
+                <div class="layer-label">
+                  <span class="layer-name">Input</span>
+                  <span class="layer-size">12 neuron</span>
+                </div>
+                <div class="layer-neurons input" id="inputLayer"></div>
+                <div class="layer-desc">3 huruf × 4 embedding</div>
+              </div>
+
+              <div class="network-connection">
+                <div class="connection-weights">
+                  <span>W1</span>
+                  <span class="weight-size">12 × 48</span>
+                </div>
+                <div class="connection-line"></div>
+              </div>
+
+              <div class="network-layer">
+                <div class="layer-label">
+                  <span class="layer-name">Hidden</span>
+                  <span class="layer-size">48 neuron</span>
+                </div>
+                <div class="layer-neurons hidden" id="hiddenLayer"></div>
+                <div class="layer-desc">+ ReLU (buang negatif)</div>
+              </div>
+
+              <div class="network-connection">
+                <div class="connection-weights">
+                  <span>W2</span>
+                  <span class="weight-size">48 × 11</span>
+                </div>
+                <div class="connection-line"></div>
+              </div>
+
+              <div class="network-layer">
+                <div class="layer-label">
+                  <span class="layer-name">Output</span>
+                  <span class="layer-size" id="outputSize">11 neuron</span>
+                </div>
+                <div class="layer-neurons output" id="outputLayer"></div>
+                <div class="layer-desc">1 per karakter</div>
+              </div>
+            </div>
+
+            <div class="explanation-card">
+              <h4>🎛️ Apa itu Weight? (DJ Knobs)</h4>
+              <p>
+                Weight itu ibarat <strong>knop volume</strong> di mixer tadi.
+              </p>
+              <p>
+                Di awal, semua knop ini kita puter
+                <strong>ngasal (Random)</strong>. Makanya output suaranya
+                (tebakan AI) pasti ancur parah awalnya.
+              </p>
+              <p>
+                Tugas kita: Muterin dikit-dikit semua knop ini sampe outputnya
+                pas!
+              </p>
+              <code>W1 = random × √(2/12)</code>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">Python</span>
+                <span class="code-title">Inisialisasi weights</span>
+              </div>
+              <pre><code><span class="code-comment"># Weight = angka yg "dipelajarin"</span>
+input_dim = <span class="code-number">12</span>   <span class="code-comment"># 3 huruf × 4 embedding</span>
+n_hidden = <span class="code-number">48</span>    <span class="code-comment"># Neuron di hidden layer</span>
+vocab_size = <span class="code-number">11</span>  <span class="code-comment"># Jumlah karakter unik</span>
+
+<span class="code-comment"># He initialization buat weight</span>
+W1 = random((input_dim, n_hidden)) * sqrt(<span class="code-number">2</span>/input_dim)
+W2 = random((n_hidden, vocab_size)) * sqrt(<span class="code-number">2</span>/n_hidden)
+
+<span class="code-comment"># Bias start dari 0</span>
+b1 = zeros(n_hidden)  <span class="code-comment"># 48 angka</span>
+b2 = zeros(vocab_size)  <span class="code-comment"># 11 angka</span></code></pre>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <span class="stat-value" id="totalParams">1,148</span>
+                <span class="stat-label">Total Parameter</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-value">3</span>
+                <span class="stat-label">Layer</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-value" id="vocabSizeDisplay">11</span>
+                <span class="stat-label">Karakter</span>
+              </div>
+            </div>
+
+            <div class="insight-box">
+              <span class="insight-icon">🧠</span>
+              <div class="insight-content">
+                <strong
+                  ><span id="totalParamsInsight">1,148</span> Parameter!</strong
+                >
+                Ini adalah jumlah parameter "sel otak" yang harus dilatih.
+                Mereka kesebar di
+                <strong>3 Layer</strong> untuk memproses pola, dan bertugas
+                mengenali
+                <strong><span id="vocabSizeInsight">11</span> karakter</strong>
+                unik dari teks. Tugas AI adalah mencari kombinasi angka yang pas
+                buat nebak huruf selanjutnya!
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Chapter 5: Forward Pass -->
+        <section class="chapter" id="chapter5">
+          <div class="chapter-header">
+            <span class="chapter-num">Bab 5</span>
+            <h2>🎬 Liat AI "Mikir" (Forward Pass)</h2>
+          </div>
+          <div class="chapter-content">
+            <div class="story-text">
+              <p>Sekarang kita intip alur data dari input sampe output!</p>
+              <p>
+                Nama prosesnya: <span class="text-glow">Forward Pass</span>.
+              </p>
+            </div>
+
+            <div class="explanation-card">
+              <h4>🔄 Flow Forward Pass:</h4>
+              <ol>
+                <li><strong>Embedding:</strong> 3 huruf → 12 angka</li>
+                <li><strong>Hidden:</strong> 12 angka × W1 + b1 → 48 angka</li>
+                <li><strong>ReLU:</strong> Buang nilai negatif (jadiin 0)</li>
+                <li><strong>Output:</strong> 48 angka × W2 + b2 → 11 angka</li>
+                <li>
+                  <strong>Softmax:</strong> 11 angka → 11 probabilitas (total
+                  100%)
+                </li>
+              </ol>
+            </div>
+
+            <div class="demo-box">
+              <div class="demo-header">
+                <label>Contoh input:</label>
+                <select id="forwardPassInput" class="demo-select"></select>
+              </div>
+
+              <div class="forward-flow">
+                <div class="flow-step" id="flowStep1">
+                  <div class="flow-label">1️⃣ Input: 3 Huruf</div>
+                  <div id="fpInputChars" class="flow-chars"></div>
+                </div>
+
+                <div class="flow-arrow">↓</div>
+
+                <div class="flow-step" id="flowStep2">
+                  <div class="flow-label">2️⃣ Embedding: Jadi 12 Angka</div>
+                  <div id="fpEmbedding" class="flow-vector"></div>
+                  <div class="flow-code">
+                    <code>emb = token_emb + position_emb</code>
+                  </div>
+                </div>
+
+                <div class="flow-arrow">
+                  ↓ <span class="formula">× W1 (12×48) + b1</span>
+                </div>
+
+                <div class="flow-step" id="flowStep3">
+                  <div class="flow-label">3️⃣ Hidden Layer: 48 Neuron</div>
+                  <div id="fpHidden" class="flow-neurons"></div>
+                  <div class="flow-code">
+                    <code>h = ReLU(emb @ W1 + b1)</code>
+                  </div>
+                  <div class="flow-note">🔥 Kuning = aktif (nilai &gt; 0)</div>
+                </div>
+
+                <div class="flow-arrow">
+                  ↓ <span class="formula">× W2 (48×11) + b2 → Softmax</span>
+                </div>
+
+                <div class="flow-step" id="flowStep4">
+                  <div class="flow-label">4️⃣ Output: Peluang Tiap Karakter</div>
+                  <div id="fpOutput" class="flow-probs"></div>
+                </div>
+
+                <div class="flow-arrow">↓</div>
+
+                <div class="flow-step" id="flowStep5">
+                  <div class="flow-label">
+                    5️⃣ Prediksi: Karakter dengan Prob Tertinggi
+                  </div>
+                  <div id="fpPrediction" class="flow-prediction">
+                    <span class="pred-char">?</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="insight-box">
+              <span class="insight-icon">⚠️</span>
+              <div class="insight-content">
+                <strong>Prediksi masih salah!</strong> Karena weight masih
+                random. Di bab selanjutnya, kita akan "latih" AI supaya
+                prediksinya bener!
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Chapter 6: Training -->
+        <section class="chapter" id="chapter6">
+          <div class="chapter-header">
+            <span class="chapter-num">Bab 6</span>
+            <h2>🏋️ Waktunya Belajar!</h2>
+          </div>
+          <div class="chapter-content">
+            <div class="story-text">
+              <p>
+                Ini momen 'Montage' latihannya bro. Anggep aja kayak
+                <strong>Latihan Memanah 🏹</strong>.
+              </p>
+              <p>
+                Kita ulang proses ini ribuan kali sampe tembakannya kena
+                bullseye terus!
+              </p>
+            </div>
+
+            <div class="learning-steps">
+              <div class="learn-step">
+                <span class="learn-num">1</span>
+                <span class="learn-text"
+                  ><strong>Nembak (Forward):</strong> Coba tebak huruf</span
+                >
+              </div>
+              <div class="learn-arrow">→</div>
+              <div class="learn-step">
+                <span class="learn-num">2</span>
+                <span class="learn-text"
+                  ><strong>Ukur Jarak (Loss):</strong> Seberapa meleset?</span
+                >
+              </div>
+              <div class="learn-arrow">→</div>
+              <div class="learn-step">
+                <span class="learn-num">3</span>
+                <span class="learn-text"
+                  ><strong>Analisa (Backward):</strong> Kenapa meleset?</span
+                >
+              </div>
+              <div class="learn-arrow">→</div>
+              <div class="learn-step">
+                <span class="learn-num">4</span>
+                <span class="learn-text"
+                  ><strong>Geser Aim (Update):</strong> Puter knop dikit</span
+                >
+              </div>
+            </div>
+
+            <div class="explanation-card">
+              <h4>📉 Apa itu Loss?</h4>
+              <p>
+                <strong>Loss</strong> = seberapa bego si AI. Makin kecil, makin
+                pinter!
+              </p>
+              <p>Rumus: <code>loss = -log(probabilitas jawaban benar)</code></p>
+              <p>
+                Kalo AI yakin 90% (padahal bener) → loss kecil. Kalo cuma yakin
+                1% → loss gede!
+              </p>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">Python</span>
+                <span class="code-title">Training loop</span>
+              </div>
+              <pre><code><span class="code-keyword">for</span> epoch <span class="code-keyword">in</span> range(<span class="code-number">2000</span>):  <span class="code-comment"># Ulangi 2000x</span>
+    <span class="code-keyword">for</span> x, y <span class="code-keyword">in</span> training_data:
+        <span class="code-comment"># 1. Forward pass</span>
+        probs = forward(x)
+        
+        <span class="code-comment"># 2. Itung error (loss)</span>
+        loss = -log(probs[y])
+        
+        <span class="code-comment"># 3. Backward pass (cari gradien)</span>
+        gradients = backward(loss)
+        
+        <span class="code-comment"># 4. Update weights (belajar)</span>
+        W1 -= learning_rate * grad_W1
+        W2 -= learning_rate * grad_W2</code></pre>
+            </div>
+
+            <div class="training-panel">
+              <h3>🚀 Gas Training Sekarang!</h3>
+              <div class="training-params">
+                <div class="param-item">
+                  <label>Epochs (berapa kali muter)</label>
+                  <input
+                    type="number"
+                    id="epochs"
+                    value="2000"
+                    min="100"
+                    max="5000"
+                  />
+                </div>
+                <div class="param-item">
+                  <label>Learning Rate (kecepatan belajar)</label>
+                  <input
+                    type="number"
+                    id="learningRate"
+                    value="0.05"
+                    step="0.01"
+                  />
+                </div>
+              </div>
+
+              <div class="training-actions">
+                <button id="trainBtn" class="btn btn-train">
+                  🚀 Mulai Training!
+                </button>
+                <button id="stopBtn" class="btn btn-stop" disabled>
+                  ⏹️ Stop
+                </button>
+              </div>
+
+              <div class="training-progress">
+                <div class="progress-stats">
+                  <div class="progress-stat">
+                    <span class="stat-name">Epoch</span>
+                    <span class="stat-num" id="currentEpoch">0</span>
+                  </div>
+                  <div class="progress-stat">
+                    <span class="stat-name">Loss</span>
+                    <span class="stat-num" id="currentLoss">--</span>
+                  </div>
+                  <div class="progress-stat">
+                    <span class="stat-name">Status</span>
+                    <span class="stat-num" id="trainingStatus">Siap</span>
+                  </div>
+                </div>
+                <div class="progress-bar">
+                  <div id="progressFill" class="progress-fill"></div>
+                </div>
+              </div>
+
+              <div class="chart-container">
+                <canvas id="lossChart"></canvas>
+              </div>
+            </div>
+
+            <div
+              class="insight-box success"
+              id="trainingComplete"
+              style="display: none"
+            >
+              <span class="insight-icon">🎉</span>
+              <div class="insight-content">
+                <strong>Training Kelar!</strong>
+                Liat loss-nya turun kan? Artinya tebakan AI makin jitu bro!
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Chapter 7: Generate -->
+        <section class="chapter" id="chapter7">
+          <div class="chapter-header">
+            <span class="chapter-num">Bab 7</span>
+            <h2>🎓 Wisuda: AI Siap Turun Gunung!</h2>
+          </div>
+          <div class="chapter-content">
+            <div class="story-text" id="generateStatus">
+              <p>
+                ⚠️ <strong>Eits tunggu!</strong> Training dulu lah di Bab 6 baru
+                bisa generate.
+              </p>
+            </div>
+
+            <div class="explanation-card">
+              <h4>🔄 Cara Generate Teks:</h4>
+              <ol>
+                <li>Start dari kata awal (misal "aku")</li>
+                <li>Ambil 3 huruf terakhir (konteks)</li>
+                <li>Forward pass → dapet peluang next character</li>
+                <li>Pilih huruf yg peluangnya paling gede</li>
+                <li>Ulang terus sampe ketemu titik (.)</li>
+              </ol>
+            </div>
+
+            <div class="generate-panel">
+              <div class="generate-input">
+                <label>Start dari kata:</label>
+                <input
+                  type="text"
+                  id="startWord"
+                  value="aku"
+                  class="story-input"
+                />
+                <button id="generateBtn" class="btn btn-generate" disabled>
+                  ✨ Generate!
+                </button>
+              </div>
+
+              <div class="generate-result">
+                <label>Hasilnya:</label>
+                <div id="generatedText" class="result-text">
+                  <span class="placeholder"
+                    >Pencet Generate buat liat hasilnya...</span
+                  >
+                </div>
+              </div>
+
+              <div class="generate-steps" id="generateSteps">
+                <h4>🔍 Proses Generate (Step by Step):</h4>
+                <div id="genStepsList" class="gen-steps"></div>
+              </div>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">Python</span>
+                <span class="code-title">Fungsi generate</span>
+              </div>
+              <pre><code><span class="code-keyword">def</span> generate(start_word):
+    current = tokenize(start_word)
+    result = start_word
+    
+    <span class="code-keyword">for</span> _ <span class="code-keyword">in</span> range(<span class="code-number">50</span>):  <span class="code-comment"># Max 50 karakter</span>
+        input_seq = current[-<span class="code-number">3</span>:]  <span class="code-comment"># 3 huruf terakhir</span>
+        probs = forward(input_seq)
+        next_char = chars[argmax(probs)]
+        
+        <span class="code-keyword">if</span> next_char == <span class="code-string">'.'</span>:
+            <span class="code-keyword">break</span>
+            
+        result += next_char
+        current.append(stoi[next_char])
+    
+    <span class="code-keyword">return</span> result</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Epilog -->
+        <section class="chapter epilog" id="epilog">
+          <div class="chapter-header">
+            <span class="chapter-num">Epilog</span>
+            <h2>🎓 Apa yg Udah Lu Pelajarin!</h2>
+          </div>
+          <div class="chapter-content">
+            <div class="recap-grid">
+              <div class="recap-item">
+                <span class="recap-icon">🔤</span>
+                <span class="recap-title">Tokenization</span>
+                <span class="recap-desc">Huruf → ID angka</span>
+              </div>
+              <div class="recap-item">
+                <span class="recap-icon">📊</span>
+                <span class="recap-title">Embedding</span>
+                <span class="recap-desc">ID → Vektor (awalnya random)</span>
+              </div>
+              <div class="recap-item">
+                <span class="recap-icon">🧠</span>
+                <span class="recap-title">Neural Network</span>
+                <span class="recap-desc">Input → Hidden → Output</span>
+              </div>
+              <div class="recap-item">
+                <span class="recap-icon">🏋️</span>
+                <span class="recap-title">Training</span>
+                <span class="recap-desc">Belajar dari error</span>
+              </div>
+              <div class="recap-item">
+                <span class="recap-icon">✨</span>
+                <span class="recap-title">Generate</span>
+                <span class="recap-desc">AI jadi pinter!</span>
+              </div>
+            </div>
+
+            <div class="final-message">
+              <p>
+                🚀 <strong>Ini baru permulaan bro!</strong> AI jaman now kayak
+                ChatGPT pake konsep yg sama, bedanya:
+              </p>
+              <ul>
+                <li>Layernya ratusan (gila kan!)</li>
+                <li>Parameternya 175 miliar (buset!)</li>
+                <li>Datanya nancep dari seluruh internet</li>
+                <li>Plus fitur canggih: Attention, Transformer, dll.</li>
+              </ul>
+              <p>
+                Tapi <strong>DNA</strong>-nya? Sama persis kyk yg barusan lu
+                pelajarin! 💪
+              </p>
+            </div>
+
+            <div class="restart-section">
+              <button id="restartBtn" class="btn btn-restart">
+                🔄 Ulangi dengan Data Baru
+              </button>
+              <a href="akusukakoding.py" download class="btn btn-download">
+                💾 Download Code Python Asli
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <p>
+          🚀 Dibuat untuk belajar AI dari dasar, No PyTorch, No TensorFlow, Pure
+          Math!
+        </p>
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
