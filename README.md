@@ -2,7 +2,14 @@
 
 > **Bongkar rahasia "otak" LLM, liat gimana cara dia mikir & generate teks, step by step, dari nol banget!**
 
-## 📖 Apa ini?
+[Live Demo](https://llm-fundamental.vercel.app/)
+
+## Intro
+
+Selamat datang di repo belajar LLM paling "mendarat di bumi"! 🌍
+Repo ini dibuat khusus buat kalian yang pengen ngerti gimana sih sebenernya cara kerja Large Language Model (LLM) itu, tapi males dengerin jargon-jargon alien kayak "Transformers", "Feed Forward", dll di awal.
+
+Kita bakal bongkar cara kerja "otak" AI step-by-step, sambil ngoding bareng pake **Pure Python**. No library-library ajaib dulu (bye TensorFlow, bye PyTorch) biar kita bener-bener paham _first principles_-nya.
 
 Proyek ini adalah sebuah **Interactive Educational Web App** yang dibuat khusus untuk memahami cara kerja _Large Language Model_ (LLM) seperti GPT, tapi dalam skala mikro.
 
